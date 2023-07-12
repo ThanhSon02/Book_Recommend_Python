@@ -36,16 +36,22 @@ def getMostPopularBooks():
     popular.reset_index(drop=True, inplace=True)
     return popular.head(10).T
 
+#numpy
 @app.get("/books/details/{isbn}")
 def getBookDetails(isbn:str):
     books_df = pd.read_csv(path + '\Books.csv', dtype="string")
-    ratings_df = pd.read_csv(path + '\Ratings.csv')
-    ratings_df = ratings_df[ratings_df['Book-Rating'] != 0]
-
-    ratings_mean = ratings_df.groupby("ISBN").agg({'Book-Rating': 'mean', 'User-ID': 'count'}).rename(columns={'User-ID': 'Rating-Count'})
-    books_df = pd.merge(books_df, ratings_mean, on='ISBN', how='left')
-    books_df.set_index('ISBN', inplace=True)
-    return books_df.loc[isbn]
+    if isbn in books_df['ISBN']:
+        ratings_df = pd.read_csv(path + '\Ratings.csv')
+        ratings_df = ratings_df[ratings_df['Book-Rating'] != 0]
+        book_ratings = np.array(ratings_df[ratings_df['ISBN'] == isbn]['Book-Rating'])
+        book = books_df[books_df["ISBN"] == '0439139597'].to_dict(orient='records')[0]
+        if len(book_ratings) > 0:
+            rating = np.round(np.mean(book_ratings), 1)
+            book['Book-Rating'] = rating
+        else: 
+            book['Book-Rating'] = 'No ratings yet'
+        return book
+    return "There's no data of this book"
 
 @app.get("/authors/highestrated")
 def getHighestRatedAuthors():
