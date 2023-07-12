@@ -61,7 +61,7 @@ def getBookDetails(isbn:str):
         ratings_df = pd.read_csv(path + '\Ratings.csv')
         ratings_df = ratings_df[ratings_df['Book-Rating'] != 0]
         book_ratings = np.array(ratings_df[ratings_df['ISBN'] == isbn]['Book-Rating'])
-        book = books_df[books_df["ISBN"] == '0439139597'].to_dict(orient='records')[0]
+        book = books_df[books_df["ISBN"] == isbn].to_dict(orient='records')[0]
         if len(book_ratings) > 0:
             rating = np.round(np.mean(book_ratings), 1)
             book['Book-Rating'] = rating
