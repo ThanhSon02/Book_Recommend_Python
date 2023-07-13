@@ -16,7 +16,7 @@ function Home({ data1, data2, data3 }) {
                 color={"#2D518B"}
                 data={data2}
             />
-            <SimpleSlider title="Top 12" color={"#213b64"} data={data3} />
+            {/* <SimpleSlider title="Top 12" color={"#213b64"} data={data3} /> */}
         </>
     );
 }
