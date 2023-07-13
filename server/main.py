@@ -6,6 +6,7 @@ from fastapi import FastAPI
 import numpy as np
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 import os
 
@@ -97,6 +98,72 @@ def getTopUsersCountries():
     countries_df.reset_index(inplace=True)
     countries_df = countries_df.rename(columns={'index':'Country', 'Country': 'User-Count'})
     return countries_df.head().T
+
+#numpy
+@app.get("/books/correlation/{isbn1}&{isbn2}")
+def getBookCorrelation(isbn1, isbn2):
+    books = np.array(pd.read_csv(path + '\Books.csv'))
+    if isbn1 not in books or isbn2 not in books:
+        return "Book(s) doesn't exist"
+    ratings_df = pd.read_csv(path + '\Ratings.csv')
+    ratings_df = ratings_df[ratings_df['Book-Rating'] != 0]
+    ratings_df = ratings_df.dropna(subset=['User-ID', 'ISBN'])
+    ratings_df = ratings_df[(ratings_df['ISBN'] == isbn1) | (ratings_df['ISBN'] == isbn2)]
+
+    ratings_pivot = ratings_df.pivot_table(index='User-ID', columns='ISBN', values='Book-Rating')
+    ratings_pivot = ratings_pivot.replace([np.inf, -np.inf], np.nan).dropna()
+    if (np.std(np.array(ratings_pivot[isbn1])) == 0 or np.std(np.array(ratings_pivot[isbn2])) == 0):
+        return "Can't calculate the correlation"
+    corr_matrix = np.corrcoef(ratings_pivot[isbn1], ratings_pivot[isbn2])
+    return corr_matrix[0, 1]
+
+class Rating(BaseModel):
+    userId: int
+    isbn: str
+    bookRating: float
+
+
+@app.post("/ratings/add")
+def rateBook(rating: Rating):
+    users_df = pd.read_csv(path + '\\Users.csv')
+    books_df = pd.read_csv(path + '\Books.csv')
+    ratings_df = pd.read_csv(path + '\Ratings.csv')
+
+    if rating.userId not in np.array(users_df['User-ID']):
+        return "User doesn't exist"
+    if rating.isbn not in np.array(books_df['ISBN']):
+        return "Book doesn't exist"
+    if (rating.userId in np.array(ratings_df['User-ID']) and rating.isbn in np.array(ratings_df['ISBN'])):
+        ratings_df.loc[(ratings_df['ISBN'] == rating.isbn) & (ratings_df['User-ID'] == rating.userId), 'Book-Rating'] = rating.bookRating
+    else:
+        row = {'User-ID': rating.userId, 'ISBN': rating.isbn, 'Book-Rating': rating.bookRating}
+        ratings_df = ratings_df.append(row, ignore_index=True)
+    ratings_df.to_csv(path + '\Ratings.csv', index=False)
+    return "Successfully rated a book"
+
+class Book(BaseModel):
+    isbn: str
+    title: str
+    author: str
+    publishYear: int
+    publisher: str
+    imgS: str
+    imgM: str
+    imgL: str
+
+@app.post("/books/add")
+def addBook(book: Book):
+    books_df = pd.read_csv(path + '\Books.csv')
+    if book.isbn in np.array(books_df['ISBN']):
+        return 'Book with this ISBN already exist'
+    row = {'ISBN': book.isbn, 'Book-Title': book.title, 'Book-Author': book.author, 
+           'Year-Of-Publication': book.publishYear, 'Publisher': book.publisher,
+           'Image-URL-S': book.imgS, 'Image-URL-M': book.imgM, 'Image-URL-L': book.imgL}
+    books_df = books_df.append(row, ignore_index=True)
+    books_df.to_csv(path + '\Books.csv', index=False)
+    return "Successfully added a book"
+
+
 
 if __name__ == "__main__":
     uvicorn.run(app)
