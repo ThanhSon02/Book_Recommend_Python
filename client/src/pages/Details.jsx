@@ -89,8 +89,11 @@ function Details() {
                 <form className="w-2/3 mt-5" onSubmit={handleSubmit}>
                     <div className="mt-3 flex flex-col gap-2">
                         <div className="flex items-center">
-                            <label className="mr-2">Rating: </label>
+                            <label className="mr-2 text-xl font-semibold">
+                                Rating:{" "}
+                            </label>
                             <Rating
+                                max={10}
                                 name="controlled"
                                 value={formRating.rating}
                                 onChange={(e, value) =>
@@ -104,7 +107,7 @@ function Details() {
                             />
                         </div>
                     </div>
-                    <button className="mt-3 bg-white text-black py-1 px-6 font-bold hover:opacity-90">
+                    <button className="mt-3 bg-white rounded text-black py-1 px-6 font-bold hover:opacity-90">
                         Rate!
                     </button>
                 </form>
