@@ -5,6 +5,7 @@ from fastapi import FastAPI, Body
 import numpy as np
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 import os
 
@@ -97,54 +98,55 @@ def getBookCorrelation(isbn1, isbn2):
     corr_matrix = np.corrcoef(ratings_pivot[isbn1], ratings_pivot[isbn2])
     return corr_matrix[0, 1]
 
+class Rating(BaseModel):
+    userId: int
+    isbn: str
+    bookRating: float
+
 @app.post("/books/rate")
-def rateBook(payload: dict = Body(...)):
+def rateBook(rating: Rating):
     global ratings_df
-    rating = payload["data"]
-    if rating["isbn"] not in np.array(books_df['ISBN']):
+    if rating.isbn not in np.array(books_df['ISBN']):
         return "Book doesn't exist"
-    if (len(ratings_df[(ratings_df['ISBN'] == rating["isbn"]) & (ratings_df['User-ID'] == rating["userId"])]) > 0):
-        ratings_df.loc[(ratings_df['ISBN'] == rating["isbn"]) & (ratings_df['User-ID'] == rating["userId"]), 'Book-Rating'] = rating["bookRating"]
+    if (len(ratings_df[(ratings_df['ISBN'] == rating.isbn) & (ratings_df['User-ID'] == rating.userId)]) > 0):
+        ratings_df.loc[(ratings_df['ISBN'] == rating.isbn) & (ratings_df['User-ID'] == rating.userId), 'Book-Rating'] = rating.bookRating
     else:
-        row = [rating["userId"], rating["isbn"], rating["bookRating"]]
+        row = [rating.userId, rating.isbn, rating.bookRating]
         ratings_df.loc[len(ratings_df)] = row
     ratings_df.to_csv(path + '\Ratings.csv', index=False)
     return "Successfully rated a book"
 
-# {
-#   "isbn": "ducthanh",
-#   "title": "ducthanhdeptrai",
-#   "author": "thanh",
-#   "publishYear": 2023,
-#   "publisher": "HBT"
-#   "imgS": "str",
-#   "imgM": "str",
-#   "imgL": "str"
-# }
+class Book(BaseModel):
+    isbn: str
+    title: str
+    author: str
+    publishYear: int
+    publisher: str
+    imgS: str
+    imgM: str
+    imgL: str
 
 @app.post("/books/add")
-def addBook(payload: dict = Body(...)):
+def addBook(book: Book):
     global books_df
-    book = payload["data"]
-    if book["isbn"] in np.array(books_df['ISBN']):
+    if book.isbn in np.array(books_df['ISBN']):
         return 'Book with this ISBN already exist'
-    row = [book["isbn"], book["title"], book["author"], 
-           book["publishYear"], book["publisher"],
-           book["imgS"], book["imgM"], book["imgL"]]
+    row = [book.isbn, book.title, book.author, 
+           book.publishYear, book.publisher,
+           book.imgS, book.imgM, book.imgL]
     books_df.loc[len(books_df)] = row 
     books_df.to_csv(path + '\Books.csv', index=False)
     return "Successfully added a book"
 
 @app.post("/books/update")
-def updateBook(payload: dict = Body(...)):
+def updateBook(book: Book):
     global books_df
-    book = payload["data"]
-    if book["isbn"] not in np.array(books_df['ISBN']):
+    if book.isbn not in np.array(books_df['ISBN']):
         return "Book doesn't exist. Considering add a new book"
-    row = [book["isbn"], book["title"], book["author"], 
-           book["publishYear"], book["publisher"],
-           book["imgS"], book["imgM"], book["imgL"]]
-    books_df.loc[books_df['ISBN'] == book["isbn"]] = row
+    row = [book.isbn, book.title, book.author, 
+           book.publishYear, book.publisher,
+           book.imgS, book.imgM, book.imgL]
+    books_df.loc[books_df['ISBN'] == book.isbn] = row
     books_df.to_csv(path + '\Books.csv', index=False)
     return "Successfully updated a book"
 
