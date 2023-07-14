@@ -2,7 +2,7 @@ import SimpleSlider from "../components/Slider/SimpleSlider";
 import Header from "../components/Header/Header";
 import PropTypes from "prop-types";
 
-function Home({ data1, data2, data3 }) {
+function Home({ data1, data2 }) {
     return (
         <>
             <Header />
