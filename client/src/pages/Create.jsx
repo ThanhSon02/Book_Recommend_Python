@@ -300,14 +300,15 @@ function Create() {
                                     />
                                 </div>
                             </section>
+                            <button className="bg-white text-[#213b64] w-1/4 rounded mt-8 py-3 px-4 font-bold text-xl">
+                                SAVE
+                            </button>
                             {updateStatus !== "" ? (
-                                <button className="bg-white text-[#213b64] w-1/4 rounded mt-8 py-3 px-4 font-bold text-xl">
-                                    SAVE
-                                </button>
-                            ) : (
                                 <h1 className="font-bold text-lg mt-5">
                                     {updateStatus}
                                 </h1>
+                            ) : (
+                                <></>
                             )}
                         </form>
                     ) : (
