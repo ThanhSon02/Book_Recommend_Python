@@ -7,17 +7,17 @@ function Header() {
                 <NavLink
                     to="/"
                     className="text-white px-3.5 py-2 hover:border-white border-transparent border-2 rounded">
-                    Home
+                    Trang Chủ
                 </NavLink>
                 <NavLink
                     to="/create"
                     className="text-white px-3.5 py-2 hover:border-white border-transparent border-2 rounded">
-                    Create New
+                    Thêm - Sửa - Xoá
                 </NavLink>
                 <NavLink
                     to="/analysis"
                     className="text-white px-3.5 py-2 hover:border-white border-transparent border-2 rounded">
-                    Analysis
+                    Tương Quan
                 </NavLink>
             </div>
         </>

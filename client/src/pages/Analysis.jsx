@@ -27,27 +27,25 @@ function Analysis() {
             <div className="bg-[#213b64] w-full h-screen flex-col flex items-center gap-8">
                 <div className="flex flex-col items-center mt-5">
                     <h1 className="text-white text-2xl font-bold">
-                        Calculate Correlation!
+                        Tính hệ số tương quan
                     </h1>
                     <div className="flex gap-5 mt-4">
                         <div>
                             <label className="mr-2 font-semibold text-white">
-                                Book 1:
+                                Sách 1:
                             </label>
                             <input
                                 value={idBook1}
-                                placeholder="id1"
                                 className="px-1 py-2 rounded"
                                 onChange={(e) => setIdBook1(e.target.value)}
                             />
                         </div>
                         <div>
                             <label className="mr-2 font-semibold text-white">
-                                Book 2:
+                                Sách 2:
                             </label>
                             <input
                                 value={idBook2}
-                                placeholder="id2"
                                 className="px-1 py-2 rounded"
                                 onChange={(e) => setIdBook2(e.target.value)}
                             />
@@ -57,13 +55,13 @@ function Analysis() {
                 <button
                     onClick={handleCalculate}
                     className="bg-white px-2 py-3 rounded w-1/6">
-                    Calculate
+                    Tính
                 </button>
                 <div className="mt-10 text-white flex items-center">
                     {typeof result === "number" ? (
                         <div className="flex items-end">
                             <h2 className="font-semibold text-lg mr-4">
-                                Result Correlation:
+                                Kết quả:
                             </h2>
                             <div className="text-red-600 text-lg font-semibold">
                                 {parseFloat(result).toFixed(2)}

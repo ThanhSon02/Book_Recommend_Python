@@ -1,8 +1,9 @@
-import SimpleSlider from "../components/Slider/SimpleSlider";
+import SimpleSlider from "../components/Slider/SimpleSliderIMG";
 import Header from "../components/Header/Header";
 import PropTypes from "prop-types";
+import SimpleSliderText from "../components/Slider/SimpleSliderText";
 
-function Home({ data1, data2 }) {
+function Home({ data1, data2, data3 }) {
     return (
         <>
             <Header />
@@ -16,7 +17,11 @@ function Home({ data1, data2 }) {
                 color={"#2D518B"}
                 data={data2}
             />
-            {/* <SimpleSlider title="Top 12" color={"#213b64"} data={data3} /> */}
+            <SimpleSliderText
+                title="Top 10 tác giả được đánh giá cao nhất"
+                color={"#213b64"}
+                data={data3}
+            />
         </>
     );
 }

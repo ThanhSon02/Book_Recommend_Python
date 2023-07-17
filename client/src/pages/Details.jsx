@@ -66,21 +66,19 @@ function Details() {
                         {data.title}
                     </h1>
                     <div className="flex">
-                        <h1 className="font-semibold mr-2">Author: </h1>
+                        <h1 className="font-semibold mr-2">Tác giả: </h1>
                         <p>{data.author}</p>
                     </div>
                     <div className="flex">
-                        <h1 className="font-semibold mr-2">
-                            Year Of Publication:
-                        </h1>
+                        <h1 className="font-semibold mr-2">Năm phát hành:</h1>
                         <p>{data.publishYear}</p>
                     </div>
                     <div className="flex">
-                        <h1 className="font-semibold mr-2">Publisher: </h1>
+                        <h1 className="font-semibold mr-2">Nhà xuất bản: </h1>
                         <p>{data.publisher}</p>
                     </div>
                     <div className="flex">
-                        <h1 className="font-semibold mr-2">Book Rating: </h1>
+                        <h1 className="font-semibold mr-2">Đánh giá: </h1>
                         <p className="font-bold text-red-600">
                             {parseFloat(data.rating).toFixed(1)}
                         </p>
@@ -90,7 +88,7 @@ function Details() {
                     <div className="mt-3 flex flex-col gap-2">
                         <div className="flex items-center">
                             <label className="mr-2 text-xl font-semibold">
-                                Rating:{" "}
+                                Đánh giá cuốn sách này:
                             </label>
                             <Rating
                                 max={10}
@@ -108,7 +106,7 @@ function Details() {
                         </div>
                     </div>
                     <button className="mt-3 bg-white rounded text-black py-1 px-6 font-bold hover:opacity-90">
-                        Rate!
+                        Gửi đánh giá
                     </button>
                 </form>
                 {ratingStatus ? <h1>{ratingStatus}</h1> : <></>}
